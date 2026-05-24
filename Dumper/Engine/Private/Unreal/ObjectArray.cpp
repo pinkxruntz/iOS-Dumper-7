@@ -627,81 +627,87 @@ int32 ObjectArray::ObjectsIterator::GetIndex() const
 }
 
 /*
-* The compiler won't generate functions for a specific template type unless it's used in the .cpp file corresponding to the
-* header it was declatred in.
+* Explicit template instantiation definitions.
+*
+* Unlike the previous "fake call" approach (a [[maybe_unused]] function that was never invoked),
+* explicit instantiations are guaranteed by the C++ standard (ISO C++11 §14.7.2) to cause the
+* compiler to emit a real symbol for each specialization. Dead-code elimination and LTO cannot
+* strip them, which is what caused the original linker errors on arm64.
 *
 * See https://stackoverflow.com/questions/456713/why-do-i-get-unresolved-external-symbol-errors-when-using-templates
 */
-[[maybe_unused]] void TemplateTypeCreationForObjectArray(void)
-{
-	ObjectArray::FindObject<UEObject>("");
-	ObjectArray::FindObject<UEField>("");
-	ObjectArray::FindObject<UEEnum>("");
-	ObjectArray::FindObject<UEStruct>("");
-	ObjectArray::FindObject<UEClass>("");
-	ObjectArray::FindObject<UEFunction>("");
-	ObjectArray::FindObject<UEProperty>("");
-	ObjectArray::FindObject<UEByteProperty>("");
-	ObjectArray::FindObject<UEBoolProperty>("");
-	ObjectArray::FindObject<UEObjectProperty>("");
-	ObjectArray::FindObject<UEClassProperty>("");
-	ObjectArray::FindObject<UEStructProperty>("");
-	ObjectArray::FindObject<UEArrayProperty>("");
-	ObjectArray::FindObject<UEMapProperty>("");
-	ObjectArray::FindObject<UESetProperty>("");
-	ObjectArray::FindObject<UEEnumProperty>("");
 
-	ObjectArray::FindObjectFast<UEObject>("");
-	ObjectArray::FindObjectFast<UEField>("");
-	ObjectArray::FindObjectFast<UEEnum>("");
-	ObjectArray::FindObjectFast<UEStruct>("");
-	ObjectArray::FindObjectFast<UEClass>("");
-	ObjectArray::FindObjectFast<UEFunction>("");
-	ObjectArray::FindObjectFast<UEProperty>("");
-	ObjectArray::FindObjectFast<UEByteProperty>("");
-	ObjectArray::FindObjectFast<UEBoolProperty>("");
-	ObjectArray::FindObjectFast<UEObjectProperty>("");
-	ObjectArray::FindObjectFast<UEClassProperty>("");
-	ObjectArray::FindObjectFast<UEStructProperty>("");
-	ObjectArray::FindObjectFast<UEArrayProperty>("");
-	ObjectArray::FindObjectFast<UEMapProperty>("");
-	ObjectArray::FindObjectFast<UESetProperty>("");
-	ObjectArray::FindObjectFast<UEEnumProperty>("");
+// GetByIndex
+template UEObject   ObjectArray::GetByIndex<UEObject>(int32);
+template UEField    ObjectArray::GetByIndex<UEField>(int32);
+template UEEnum     ObjectArray::GetByIndex<UEEnum>(int32);
+template UEStruct   ObjectArray::GetByIndex<UEStruct>(int32);
+template UEClass    ObjectArray::GetByIndex<UEClass>(int32);
+template UEFunction ObjectArray::GetByIndex<UEFunction>(int32);
+template UEProperty ObjectArray::GetByIndex<UEProperty>(int32);
+template UEByteProperty  ObjectArray::GetByIndex<UEByteProperty>(int32);
+template UEBoolProperty  ObjectArray::GetByIndex<UEBoolProperty>(int32);
+template UEObjectProperty ObjectArray::GetByIndex<UEObjectProperty>(int32);
+template UEClassProperty  ObjectArray::GetByIndex<UEClassProperty>(int32);
+template UEStructProperty ObjectArray::GetByIndex<UEStructProperty>(int32);
+template UEArrayProperty  ObjectArray::GetByIndex<UEArrayProperty>(int32);
+template UEMapProperty    ObjectArray::GetByIndex<UEMapProperty>(int32);
+template UESetProperty    ObjectArray::GetByIndex<UESetProperty>(int32);
+template UEEnumProperty   ObjectArray::GetByIndex<UEEnumProperty>(int32);
 
-	ObjectArray::FindObjectFastInOuter<UEObject>("", "");
-	ObjectArray::FindObjectFastInOuter<UEField>("", "");
-	ObjectArray::FindObjectFastInOuter<UEEnum>("", "");
-	ObjectArray::FindObjectFastInOuter<UEStruct>("", "");
-	ObjectArray::FindObjectFastInOuter<UEClass>("", "");
-	ObjectArray::FindObjectFastInOuter<UEFunction>("", "");
-	ObjectArray::FindObjectFastInOuter<UEProperty>("", "");
-	ObjectArray::FindObjectFastInOuter<UEByteProperty>("", "");
-	ObjectArray::FindObjectFastInOuter<UEBoolProperty>("", "");
-	ObjectArray::FindObjectFastInOuter<UEObjectProperty>("", "");
-	ObjectArray::FindObjectFastInOuter<UEClassProperty>("", "");
-	ObjectArray::FindObjectFastInOuter<UEStructProperty>("", "");
-	ObjectArray::FindObjectFastInOuter<UEArrayProperty>("", "");
-	ObjectArray::FindObjectFastInOuter<UEMapProperty>("", "");
-	ObjectArray::FindObjectFastInOuter<UESetProperty>("", "");
-	ObjectArray::FindObjectFastInOuter<UEEnumProperty>("", "");
+// FindObject
+template UEObject   ObjectArray::FindObject<UEObject>(const std::string&, EClassCastFlags);
+template UEField    ObjectArray::FindObject<UEField>(const std::string&, EClassCastFlags);
+template UEEnum     ObjectArray::FindObject<UEEnum>(const std::string&, EClassCastFlags);
+template UEStruct   ObjectArray::FindObject<UEStruct>(const std::string&, EClassCastFlags);
+template UEClass    ObjectArray::FindObject<UEClass>(const std::string&, EClassCastFlags);
+template UEFunction ObjectArray::FindObject<UEFunction>(const std::string&, EClassCastFlags);
+template UEProperty ObjectArray::FindObject<UEProperty>(const std::string&, EClassCastFlags);
+template UEByteProperty  ObjectArray::FindObject<UEByteProperty>(const std::string&, EClassCastFlags);
+template UEBoolProperty  ObjectArray::FindObject<UEBoolProperty>(const std::string&, EClassCastFlags);
+template UEObjectProperty ObjectArray::FindObject<UEObjectProperty>(const std::string&, EClassCastFlags);
+template UEClassProperty  ObjectArray::FindObject<UEClassProperty>(const std::string&, EClassCastFlags);
+template UEStructProperty ObjectArray::FindObject<UEStructProperty>(const std::string&, EClassCastFlags);
+template UEArrayProperty  ObjectArray::FindObject<UEArrayProperty>(const std::string&, EClassCastFlags);
+template UEMapProperty    ObjectArray::FindObject<UEMapProperty>(const std::string&, EClassCastFlags);
+template UESetProperty    ObjectArray::FindObject<UESetProperty>(const std::string&, EClassCastFlags);
+template UEEnumProperty   ObjectArray::FindObject<UEEnumProperty>(const std::string&, EClassCastFlags);
 
-	ObjectArray::GetByIndex<UEObject>(-1);
-	ObjectArray::GetByIndex<UEField>(-1);
-	ObjectArray::GetByIndex<UEEnum>(-1);
-	ObjectArray::GetByIndex<UEStruct>(-1);
-	ObjectArray::GetByIndex<UEClass>(-1);
-	ObjectArray::GetByIndex<UEFunction>(-1);
-	ObjectArray::GetByIndex<UEProperty>(-1);
-	ObjectArray::GetByIndex<UEByteProperty>(-1);
-	ObjectArray::GetByIndex<UEBoolProperty>(-1);
-	ObjectArray::GetByIndex<UEObjectProperty>(-1);
-	ObjectArray::GetByIndex<UEClassProperty>(-1);
-	ObjectArray::GetByIndex<UEStructProperty>(-1);
-	ObjectArray::GetByIndex<UEArrayProperty>(-1);
-	ObjectArray::GetByIndex<UEMapProperty>(-1);
-	ObjectArray::GetByIndex<UESetProperty>(-1);
-	ObjectArray::GetByIndex<UEEnumProperty>(-1);
-}
+// FindObjectFast
+template UEObject   ObjectArray::FindObjectFast<UEObject>(const std::string&, EClassCastFlags);
+template UEField    ObjectArray::FindObjectFast<UEField>(const std::string&, EClassCastFlags);
+template UEEnum     ObjectArray::FindObjectFast<UEEnum>(const std::string&, EClassCastFlags);
+template UEStruct   ObjectArray::FindObjectFast<UEStruct>(const std::string&, EClassCastFlags);
+template UEClass    ObjectArray::FindObjectFast<UEClass>(const std::string&, EClassCastFlags);
+template UEFunction ObjectArray::FindObjectFast<UEFunction>(const std::string&, EClassCastFlags);
+template UEProperty ObjectArray::FindObjectFast<UEProperty>(const std::string&, EClassCastFlags);
+template UEByteProperty  ObjectArray::FindObjectFast<UEByteProperty>(const std::string&, EClassCastFlags);
+template UEBoolProperty  ObjectArray::FindObjectFast<UEBoolProperty>(const std::string&, EClassCastFlags);
+template UEObjectProperty ObjectArray::FindObjectFast<UEObjectProperty>(const std::string&, EClassCastFlags);
+template UEClassProperty  ObjectArray::FindObjectFast<UEClassProperty>(const std::string&, EClassCastFlags);
+template UEStructProperty ObjectArray::FindObjectFast<UEStructProperty>(const std::string&, EClassCastFlags);
+template UEArrayProperty  ObjectArray::FindObjectFast<UEArrayProperty>(const std::string&, EClassCastFlags);
+template UEMapProperty    ObjectArray::FindObjectFast<UEMapProperty>(const std::string&, EClassCastFlags);
+template UESetProperty    ObjectArray::FindObjectFast<UESetProperty>(const std::string&, EClassCastFlags);
+template UEEnumProperty   ObjectArray::FindObjectFast<UEEnumProperty>(const std::string&, EClassCastFlags);
+
+// FindObjectFastInOuter
+template UEObject   ObjectArray::FindObjectFastInOuter<UEObject>(const std::string&, std::string);
+template UEField    ObjectArray::FindObjectFastInOuter<UEField>(const std::string&, std::string);
+template UEEnum     ObjectArray::FindObjectFastInOuter<UEEnum>(const std::string&, std::string);
+template UEStruct   ObjectArray::FindObjectFastInOuter<UEStruct>(const std::string&, std::string);
+template UEClass    ObjectArray::FindObjectFastInOuter<UEClass>(const std::string&, std::string);
+template UEFunction ObjectArray::FindObjectFastInOuter<UEFunction>(const std::string&, std::string);
+template UEProperty ObjectArray::FindObjectFastInOuter<UEProperty>(const std::string&, std::string);
+template UEByteProperty  ObjectArray::FindObjectFastInOuter<UEByteProperty>(const std::string&, std::string);
+template UEBoolProperty  ObjectArray::FindObjectFastInOuter<UEBoolProperty>(const std::string&, std::string);
+template UEObjectProperty ObjectArray::FindObjectFastInOuter<UEObjectProperty>(const std::string&, std::string);
+template UEClassProperty  ObjectArray::FindObjectFastInOuter<UEClassProperty>(const std::string&, std::string);
+template UEStructProperty ObjectArray::FindObjectFastInOuter<UEStructProperty>(const std::string&, std::string);
+template UEArrayProperty  ObjectArray::FindObjectFastInOuter<UEArrayProperty>(const std::string&, std::string);
+template UEMapProperty    ObjectArray::FindObjectFastInOuter<UEMapProperty>(const std::string&, std::string);
+template UESetProperty    ObjectArray::FindObjectFastInOuter<UESetProperty>(const std::string&, std::string);
+template UEEnumProperty   ObjectArray::FindObjectFastInOuter<UEEnumProperty>(const std::string&, std::string);
 
 
 bool AllFieldIterator::operator!=(const AllFieldIterator& Other) const
