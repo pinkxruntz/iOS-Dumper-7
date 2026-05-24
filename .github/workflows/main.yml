@@ -1,0 +1,66 @@
+name: Build Dumper.dylib
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # macos-15 ships Xcode 16 by default; pin explicitly so the version
+      # is visible in the log and easy to bump later.
+      - name: Select Xcode 16
+        run: sudo xcode-select -s /Applications/Xcode_16.2.app/Contents/Developer
+
+      - name: Show toolchain versions
+        run: |
+          xcodebuild -version
+          clang --version
+
+      # Build the dylib for arm64/iphoneos.
+      # CODE_SIGN_* overrides disable signing so the build works without a
+      # developer certificate or provisioning profile in CI.
+      # DEVELOPMENT_TEAM is cleared for the same reason.
+      - name: Build (Release · arm64 · iphoneos)
+        run: |
+          xcodebuild \
+            -project Dumper.xcodeproj \
+            -scheme "Dumper" \
+            -configuration Release \
+            -sdk iphoneos \
+            -arch arm64 \
+            ONLY_ACTIVE_ARCH=NO \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            DEVELOPMENT_TEAM="" \
+            build
+
+      - name: Locate built dylib
+        run: |
+          find . -name "Dumper.dylib" 2>/dev/null || true
+          # Derive the exact build products path xcodebuild used
+          BUILD_DIR=$(xcodebuild \
+            -project Dumper.xcodeproj \
+            -scheme "Dumper" \
+            -configuration Release \
+            -sdk iphoneos \
+            -showBuildSettings 2>/dev/null \
+            | grep '^ *BUILT_PRODUCTS_DIR' | head -1 | awk '{print $3}')
+          echo "BUILT_PRODUCTS_DIR=$BUILD_DIR" >> "$GITHUB_ENV"
+
+      - name: Upload Dumper.dylib
+        uses: actions/upload-artifact@v4
+        with:
+          name: Dumper-dylib-arm64
+          path: ${{ env.BUILT_PRODUCTS_DIR }}/Dumper.dylib
+          if-no-files-found: error
+          retention-days: 30
