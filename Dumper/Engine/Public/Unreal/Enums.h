@@ -30,7 +30,7 @@ inline constexpr EEnumClass operator|(EEnumClass Left, EEnumClass Right)								
 	return (EEnumClass)((std::underlying_type<EEnumClass>::type)(Left) | (std::underlying_type<EEnumClass>::type)(Right));												\
 }																																										\
 																																										\
-inline constexpr EEnumClass& operator|=(EEnumClass& Left, EEnumClass Right)																								\
+inline EEnumClass& operator|=(EEnumClass& Left, EEnumClass Right)																								\
 {																																										\
 	return (EEnumClass&)((std::underlying_type<EEnumClass>::type&)(Left) |= (std::underlying_type<EEnumClass>::type)(Right));											\
 }																																										\
